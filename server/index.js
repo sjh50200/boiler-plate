@@ -50,8 +50,10 @@ app.post('/api/users/register', (req, res) => {
   })
 })
 
-app.post('/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
+  
   // 1. 요청된 이메일을 DB에서 찾음.
+
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user) {
       return res.json({
@@ -68,13 +70,17 @@ app.post('/login', (req, res) => {
 
 
     // 3. 비밀번호까지 맞다면 토큰 생성.
+    
       user.generateToken((err, user) => {
         if (err) return res.status(400).send(err);
         
         // 4. 토큰을 저장한다. 어디에? 쿠키, 로컬스토리지 등등 저장 가능
         res.cookie("x_auth", user.token)
           .status(200)
-          .json({ loginSuccess: true, userId: user._id })
+          .json({ 
+            loginSuccess: true, 
+            userId: user._id 
+          })
       })
     })
   }) 
